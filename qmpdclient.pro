@@ -16,7 +16,7 @@ DEFINES += NAMEVER='"\\"QMPDClient \
     $$VERSION\\""'
 DEFINES += VERSION='"\\"$$VERSION\\""'
 INCLUDEPATH += src
-QT += network xml xmlpatterns
+QT += network xml xmlpatterns widgets
 
 FORMS += ui/aboutdialog.ui \
     ui/addradiodialog.ui \
@@ -110,7 +110,7 @@ HEADERS += src/aafilter.h \
     src/timelabel.h \
     src/timeslider.h \
     src/trayicon.h \
-	src/traysonginfo.h \
+    src/traysonginfo.h \
     src/verticalbutton.h \
     src/lastfmsubmitter.h
 
@@ -184,7 +184,7 @@ SOURCES += src/aafilter.cpp \
     src/timelabel.cpp \
     src/timeslider.cpp \
     src/trayicon.cpp \
-	src/traysonginfo.cpp \
+    src/traysonginfo.cpp \
     src/verticalbutton.cpp \
     src/lastfmsubmitter.cpp
 
@@ -209,12 +209,13 @@ win32 {
 # Installation in done through own installer on win32
 unix {
     !mac {
+        QT += x11extras
         SOURCES += src/qmpdclient_x11.cpp
         LIBS += -lX11
         # Check for dbus support
         contains(QT_CONFIG, dbus) {
             message(DBus: enabled)
-            CONFIG += qdbus
+            QT += dbus
             SOURCES += src/notifications_dbus.cpp \
             	src/qdbus_adaptor.cpp
             HEADERS += src/qdbus_adaptor.h

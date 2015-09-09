@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <QDataStream>
+
 // Stuff for updating progress bar
 #define START(MSG, SIZE) int factorX = progressFactor(SIZE); if (factorX > 0) emit MPDCache::instance()->updateStart(SIZE, MSG); int stepX = 0
 #define STEP ++stepX; if (factorX > 0 && stepX % factorX == 0) emit MPDCache::instance()->updateProgress(++stepX)

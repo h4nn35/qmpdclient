@@ -32,8 +32,8 @@ class QMPDClient : public QApplication {
 public:
 	QMPDClient(int &, char **);
 	~QMPDClient();
-#ifdef Q_WS_X11
-	bool x11EventFilter(XEvent *);
+#ifdef Q_OS_LINUX
+	bool x11EventFilter(void *);
 #else
 	bool eventFilter(QObject *, QEvent *);
 #endif

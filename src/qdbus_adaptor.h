@@ -21,7 +21,7 @@
 #define QDBUS_ADAPTOR_H
 
 #include "qmpdclient.h"
-#include <QDBusAbstractAdaptor>
+#include <QtDBus/QDBusAbstractAdaptor>
 #include <QString>
 
 class MainApplicationAdaptor: public QDBusAbstractAdaptor {

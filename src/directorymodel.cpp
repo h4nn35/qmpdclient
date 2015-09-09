@@ -22,6 +22,8 @@
 #include "mpdsong.h"
 #include <QMimeData>
 #include <QStringList>
+#include <QIODevice>
+#include <QDataStream>
 
 DirectoryModel::DirectoryModel(QObject *parent) : QAbstractItemModel(parent) {
 	setObjectName("directorymodel");
@@ -145,7 +147,8 @@ QModelIndex DirectoryModel::createIndex(int row, int col, const MPDDirectory &di
 
 void DirectoryModel::setRoot(const MPDDirectory &root) {
 	m_root = root;
-	reset();
+	beginResetModel();
+	endResetModel();
 }
 
 QStringList DirectoryModel::mimeTypes() const {

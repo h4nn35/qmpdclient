@@ -180,7 +180,7 @@ void MainWindow::connectToMPD() {
 	if (!origin)
 		return;
 	QAction *action = qobject_cast<QAction*>(origin);
-	MPDConnection::instance()->connectToMPD(Config::instance()->server(action->text()));
+	MPDConnection::instance()->connectToMPD(Config::instance()->server(action->text().replace("&", "")));
 }
 
 void MainWindow::disconnected(const QString &error) {

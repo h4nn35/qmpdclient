@@ -36,7 +36,7 @@
 
 #ifdef WITH_DBUS
 #include "qdbus_adaptor.h"
-#include <QDBusConnection>
+#include <QtDBus/QDBusConnection>
 #endif
 
 QMPDClient::QMPDClient(int &argc, char **argv) : QApplication(argc, argv),
@@ -189,7 +189,7 @@ void QMPDClient::opaqueResizeChanged(bool a) {
  * either the main window or the tray icon. So, if the wheelEvents
  * position is outside the mainwindow frame, it must be the tray icon.
  */
-#ifndef Q_WS_X11
+#ifndef Q_OS_LINUX
 bool QMPDClient::eventFilter(QObject *watched, QEvent *event) {
 	if (event->type() == QEvent::Wheel) {
 		QWheelEvent *e = static_cast<QWheelEvent*>(event);

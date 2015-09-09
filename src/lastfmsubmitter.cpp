@@ -26,11 +26,13 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QUrlQuery>
 #include <QStringList>
 #include <QCryptographicHash>
 #include <QTimer>
 #include <QFile>
 #include <QDir>
+#include <QDataStream>
 
 #include <QDebug>
 
@@ -115,7 +117,7 @@ void LastFmSubmitter::scrobbleNp(MPDSong & s) {
 	QUrl url(m_npUrl);
 	QNetworkRequest request(url);
 	request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-	m_netAccess->post(request, data.toAscii());
+	m_netAccess->post(request, data.toLatin1());
 }
 
 void LastFmSubmitter::scrobbleCurrent() {
@@ -158,7 +160,7 @@ void LastFmSubmitter::scrobbleQueued() {
 		QUrl url(m_subUrl);
 		QNetworkRequest request(url);
 		request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
-		m_netAccess->post(request, data.toAscii());
+		m_netAccess->post(request, data.toLatin1());
 		m_awaitingScrob = true;
 	}
 }
@@ -173,10 +175,10 @@ bool LastFmSubmitter::ensureHandshaked() {
 QByteArray LastFmSubmitter::getPasswordHash() {
 	QByteArray passwordHash;
 	if (Config::instance()->lastFmHashedPassword())
-		passwordHash = Config::instance()->lastFmPassword().toAscii();
+		passwordHash = Config::instance()->lastFmPassword().toLatin1();
 	else
 		passwordHash = QCryptographicHash::hash(
-			Config::instance()->lastFmPassword().toAscii(),
+			Config::instance()->lastFmPassword().toLatin1(),
 			QCryptographicHash::Md5).toHex();
 
 	//accomplish it with current time
@@ -201,13 +203,15 @@ void LastFmSubmitter::doHandshake() {
 		return;
 	}
 	QUrl hsUrl = handshakeUrl();
-	hsUrl.addQueryItem("hs", "true");
-	hsUrl.addQueryItem("p", "1.2.1");
-	hsUrl.addQueryItem("c", "qmn");
-	hsUrl.addQueryItem("v", VERSION);
-	hsUrl.addQueryItem("u", Config::instance()->lastFmUsername());
-	hsUrl.addQueryItem("t", QString::number(time(NULL)));
-	hsUrl.addQueryItem("a", getPasswordHash().toHex());
+	QUrlQuery query;
+	query.addQueryItem("hs", "true");
+	query.addQueryItem("p", "1.2.1");
+	query.addQueryItem("c", "qmn");
+	query.addQueryItem("v", VERSION);
+	query.addQueryItem("u", Config::instance()->lastFmUsername());
+	query.addQueryItem("t", QString::number(time(NULL)));
+	query.addQueryItem("a", getPasswordHash().toHex());
+	hsUrl.setQuery(query);
 
 	m_netAccess->get(QNetworkRequest(hsUrl));
 	//qDebug() << "handshake sent to " << hsUrl.toString();
@@ -228,7 +232,9 @@ void LastFmSubmitter::gotNetReply(QNetworkReply * reply) {
 	if(data.size()==0)
 		return;
 	QUrl reqUrl = reply->url();
-	reqUrl.setQueryItems(QList<QPair<QString, QString> >());
+	QUrlQuery query;
+	query.setQueryItems(QList<QPair<QString, QString> >());
+	reqUrl.setQuery(query);
 	//qDebug( (QString("reply from ")+reqUrl.toString()).toAscii().data());
 
 	bool handled= false;

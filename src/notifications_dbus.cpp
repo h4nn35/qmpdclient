@@ -22,8 +22,8 @@
 #include "mpd.h"
 
 #include <QApplication>
-#include <QDBusInterface>
-#include <QDBusReply>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
 #include <QStringList>
 
 Notifications::Notifications(QObject *parent)
